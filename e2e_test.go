@@ -55,7 +55,7 @@ func TestE2EBasic(t *testing.T) {
 	testutil.Ok(t, err, string(out))
 	out, err = kubectl(context.Background(), e, "rollout", "status", "daemonset", "generic-device-plugin", "--namespace", "kube-system").CombinedOutput()
 	testutil.Ok(t, err, string(out))
-	out, err = kubectl(context.Background(), e, "patch", "deployment", "fuse", "--patch", `{"spec": {"template": {"spec": {"containers": [{"name": "fuse", "resources": {"limits": {"squat.ai/fuse": 1}}}]}}}}`).CombinedOutput()
+	out, err = kubectl(context.Background(), e, "patch", "deployment", "fuse", "--patch", `{"spec": {"template": {"spec": {"containers": [{"name": "fuse", "resources": {"limits": {"devic.es/fuse": 1}}}]}}}}`).CombinedOutput()
 	testutil.Ok(t, err, string(out))
 	out, err = kubectl(context.Background(), e, "rollout", "status", "deployment", "fuse").CombinedOutput()
 	testutil.Ok(t, err, string(out))

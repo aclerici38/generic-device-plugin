@@ -22,7 +22,7 @@ Now, Pods that require a video capture device, such as an object detection servi
 ```yaml
 resources:
   limits:
-    squat.ai/video: 1
+    devic.es/video: 1
 ```
 
 The `--device` flag can be provided multiple times to allow the plugin to discover and allocate different types of resources.
@@ -61,7 +61,7 @@ spec:
       name: http
     resources:
       limits:
-        squat.ai/video: 1
+        devic.es/video: 1
 EOF
 ```
 
@@ -98,7 +98,7 @@ Usage of generic-device-plugin:
                                   For example, to expose serial devices that may or may not be present: {"name": "serial", "groups": [{"paths": [{"path": "/dev/ttyS0", "optional": true}, {"path": "/dev/ttyUSB0", "optional": true}]}]}
                                   If mountPath is a directory, the device will be mounted to the directory with the name of the device.
                                   For example, to expose the serial devices to the /dev/serial directory: {"name": "serial", "groups": [{"paths": [{"path": "/dev/ttyUSB*", "mountPath": "/dev/serial/"}]}]}
-      --domain string             The domain to use when when declaring devices. (default "squat.ai")
+      --domain string             The domain to use when when declaring devices. (default "devic.es")
       --listen string             The address at which to listen for health and metrics. (default ":8080")
       --log-level string          Log level to use. Possible values: all, debug, info, warn, error, none (default "info")
       --plugin-directory string   The directory in which to create plugin sockets. (default "/var/lib/kubelet/device-plugins/")

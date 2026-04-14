@@ -27,7 +27,7 @@ import (
 	"github.com/squat/generic-device-plugin/deviceplugin"
 )
 
-const defaultDomain = "squat.ai"
+const defaultDomain = "devic.es"
 
 // initConfig defines config flags, config file, and envs
 func initConfig() error {
