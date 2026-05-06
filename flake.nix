@@ -110,7 +110,20 @@
                 yamlfmt.excludes = [
                   ".github"
                   "vendor"
+                  "charts/generic-device-plugin/templates"
                 ];
+                helm-docs = {
+                  enable = true;
+                  name = "helm-docs";
+                  package = pkgs.helm-docs;
+                  entry = "${pkgs.helm-docs}/bin/helm-docs --chart-search-root=.";
+                  files = "^charts/";
+                  pass_filenames = false;
+                };
+                chart-testing = {
+                  enable = true;
+                  entry = "${pkgs.chart-testing}/bin/ct lint --all --skip-helm-dependencies --validate-maintainers=false";
+                };
                 header = {
                   enable = true;
                   name = "Header";
