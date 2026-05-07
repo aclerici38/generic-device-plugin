@@ -1,3 +1,9 @@
+{{- $mountDev := true }}
+{{- range .Values.hostPathMounts }}
+  {{- if or (eq .mountPath "/dev") (hasPrefix "/dev/" .mountPath) }}
+    {{- $mountDev = false }}
+  {{- end }}
+{{- end }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -34,6 +40,13 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
+          {{- if .Values.devices }}
+          {{- range .Values.devices }}
+          - --device
+          - |
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- else }}
           - --device
           - |
             name: serial
@@ -92,6 +105,10 @@ spec:
                     mountPath: /dev/snd/controlC0
                   - path: /dev/snd/pcmC3D0c
                     mountPath: /dev/snd/pcmC0D0c
+          {{- end }}
+          {{- with .Values.args }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           ports:
@@ -102,14 +119,33 @@ spec:
           volumeMounts:
             - name: device-plugin
               mountPath: /var/lib/kubelet/device-plugins
+            {{- if $mountDev }}
             - name: dev
               mountPath: /dev
+            {{- end }}
+            {{- range .Values.hostPathMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              {{- with .readOnly }}
+              readOnly: {{ . }}
+              {{- end }}
+            {{- end }}
       volumes:
         - name: device-plugin
           hostPath:
             path: /var/lib/kubelet/device-plugins
+        {{- if $mountDev }}
         - name: dev
           hostPath:
             path: /dev
+        {{- end }}
+        {{- range .Values.hostPathMounts }}
+        - name: {{ .name }}
+          hostPath:
+            path: {{ .hostPath }}
+            {{- with .type }}
+            type: {{ . }}
+            {{- end }}
+        {{- end }}
   updateStrategy:
     type: RollingUpdate
