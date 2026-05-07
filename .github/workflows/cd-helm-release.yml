@@ -50,8 +50,12 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push chart to OCI registry
+        id: push
         if: steps.cr.outputs.changed_charts != ''
-        run: helm push .cr-release-packages/*.tgz oci://ghcr.io/${{ github.repository_owner }}/charts
+        run: |
+          out=$(helm push .cr-release-packages/*.tgz oci://ghcr.io/${{ github.repository_owner }}/charts)
+          echo "$out"
+          echo "digest=$(awk '/^Digest:/ {print $2}' <<<"$out")" >> "$GITHUB_OUTPUT"
 
       - name: Install Cosign
         if: steps.cr.outputs.changed_charts != ''
@@ -59,7 +63,4 @@ jobs:
 
       - name: Sign chart
         if: steps.cr.outputs.changed_charts != ''
-        run: |
-          ref=ghcr.io/${{ github.repository_owner }}/charts/generic-device-plugin
-          digest=$(docker buildx imagetools inspect "${ref}:${{ steps.cr.outputs.chart_version }}" --format '{{.Manifest.Digest}}')
-          cosign sign --yes "${ref}@${digest}"
+        run: cosign sign --yes "ghcr.io/${{ github.repository_owner }}/charts/generic-device-plugin@${{ steps.push.outputs.digest }}"
