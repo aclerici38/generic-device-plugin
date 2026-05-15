@@ -10,7 +10,6 @@ metadata:
   name: {{ include "generic-device-plugin.fullname" . }}
   namespace: kube-system
   labels:
-    app.kubernetes.io/name: generic-device-plugin
     {{- include "generic-device-plugin.labels" . | nindent 4 }}
 spec:
   selector:
@@ -23,7 +22,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        app.kubernetes.io/name: generic-device-plugin
         {{- include "generic-device-plugin.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
